@@ -63,8 +63,8 @@ class OmnisendApiService {
 	 * @return array Tracker data.
 	 */
 	public function create_omnisend_contact( array $form_data ): array {
-		$contact  = $this->contact_mapper->get_omnisend_contact( $form_data );
-		$response = $this->client->create_contact( $contact );
+		$contact  = $this->contact_mapper->create_contact( $form_data );
+		$response = $this->client->save_contact( $contact );
 
 		if ( ! $this->response_validator->is_valid( $response ) ) {
 			return array();
@@ -83,7 +83,7 @@ class OmnisendApiService {
 	 *
 	 */
 	public function update_omnisend_contact( array $form_data ): void {
-		$contact = $this->contact_mapper->get_update_omnisend_contact( $form_data );
+		$contact = $this->contact_mapper->update_contact( $form_data );
 		$this->client->save_contact( $contact );
 	}
 
@@ -101,7 +101,7 @@ class OmnisendApiService {
 		$contract_data = $response->get_contact();
 
 		$contact  = $this->contact_mapper->update_courses_omnisend_contract( $contract_data, $course_id, $action );
-		$response = $this->client->create_contact( $contact );
+		$response = $this->client->save_contact( $contact );
 
 		if ( ! $this->response_validator->is_valid( $response ) ) {
 			return array();
@@ -124,7 +124,7 @@ class OmnisendApiService {
 		$contract_data = $response->get_contact();
 
 		$contact  = $this->contact_mapper->update_memberships_omnisend_contract( $contract_data, $membership_id, $action );
-		$response = $this->client->create_contact( $contact );
+		$response = $this->client->save_contact( $contact );
 
 		if ( ! $this->response_validator->is_valid( $response ) ) {
 			return array();

@@ -29,7 +29,7 @@ class ContactMapper {
 	 *
 	 * @return Contact object
 	 */
-	public function get_omnisend_contact( array $mapped_fields ): Contact {
+	public function create_contact( array $mapped_fields ): Contact {
 		$options = get_option( 'omnisend_lifterlms_options' );
 		$contact = new Contact();
 
@@ -45,20 +45,28 @@ class ContactMapper {
 
 		$contact->set_welcome_email( true );
 
-		if ( ( isset( $mapped_fields['llmsconsentEmail'] ) && isset( $mapped_fields['email_address'] ) ) || ! isset( $options['filter_lms_consent_setting'] ) ) {
-			$contact->set_email_consent( self::CONSENT_PREFIX );
-			$contact->set_email_opt_in( $mapped_fields['email_address'] );
-		} else {
-			$contact->set_email_consent( self::CONSENT_PREFIX );
-			$contact->set_email_opt_in( '' );
-		}
+		if ( ! isset( $options['filter_lms_consent_setting'] ) ) {
+			if ( isset( $mapped_fields['llmsconsentEmail'] ) ) {
+				$contact->set_email_subscriber();
+				$contact->set_email_consent( self::CONSENT_PREFIX );
+			} else {
+				$contact->set_email_consent( self::CONSENT_PREFIX );
+				$contact->set_email_unsubscriber();
+			}
 
-		if ( ( isset( $mapped_fields['llmsconsentPhone'] ) && isset( $mapped_fields['llms_phone'] ) ) || ! isset( $options['filter_lms_consent_setting'] ) ) {
-			$contact->set_phone_consent( self::CONSENT_PREFIX );
-			$contact->set_phone_opt_in( $mapped_fields['llms_phone'] );
+			if ( isset( $mapped_fields['llmsconsentPhone'] ) ) {
+				$contact->set_phone_consent( self::CONSENT_PREFIX );
+				$contact->set_phone_subscriber();
+			} else {
+				$contact->set_phone_consent( self::CONSENT_PREFIX );
+				$contact->set_phone_unsubscriber();
+			}
 		} else {
+			$contact->set_email_consent( self::CONSENT_PREFIX );
+			$contact->set_email_subscriber();
+
 			$contact->set_phone_consent( self::CONSENT_PREFIX );
-			$contact->set_phone_opt_in( '' );
+			$contact->set_phone_subscriber();
 		}
 
 		$contact->add_tag( self::CUSTOM_PREFIX );
@@ -73,7 +81,7 @@ class ContactMapper {
 	 *
 	 * @return Contact object
 	 */
-	public function get_update_omnisend_contact( array $mapped_fields ): Contact {
+	public function update_contact( array $mapped_fields ): Contact {
 		$options = get_option( 'omnisend_lifterlms_options' );
 		$contact = new Contact();
 

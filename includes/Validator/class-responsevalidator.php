@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Omnisend\LifterLMSAddon\Validator;
 
-use Omnisend\SDK\V1\CreateContactResponse;
+use Omnisend\SDK\V1\SaveContactResponse;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,11 +25,11 @@ class ResponseValidator {
 	/**
 	 * Validates response.
 	 *
-	 * @param CreateContactResponse $response
+	 * @param SaveContactResponse $response
 	 *
 	 * @return bool
 	 */
-	public function is_valid( CreateContactResponse $response ): bool {
+	public function is_valid( SaveContactResponse $response ): bool {
 		if ( ! empty( $response->get_wp_error()->get_error_message() ) ) {
 			error_log( 'Error in after_submission: ' . $response->get_wp_error()->get_error_message()); // phpcs:ignore
 

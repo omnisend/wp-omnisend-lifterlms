@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Omnisend for LifterLMS Add-On
- * Description: A LifterLMS add-on to sync contacts with Omnisend. In collaboration with Omnisend for WooCommerce plugin it enables better customer tracking
- * Version: 1.0.1
+ * Description: A LifterLMS add-on to sync contacts with Omnisend. In collaboration with LifterLMS plugin it enables better customer tracking
+ * Version: 1.0.0
  * Author: Omnisend
  * Author URI: https://www.omnisend.com
  * Developer: Omnisend
@@ -94,9 +94,7 @@ class Omnisend_LifterLMSAddOn {
 			return;
 		}
 
-		$api_key = get_option( 'omnisend_api_key', null );
-
-		if ( is_null( $api_key ) ) {
+		if ( ! Omnisend\SDK\V1\Omnisend::is_connected() ) {
 			deactivate_plugins( $lifterlms_addon_plugin );
 			add_action( 'admin_notices', array( 'Omnisend_LifterLMSAddOn', 'omnisend_api_key_notice' ) );
 
