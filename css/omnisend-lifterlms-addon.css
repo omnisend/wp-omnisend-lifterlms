@@ -1,0 +1,9 @@
+.information-notice{
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-left-width: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+	border-left-color: #dba617;
+	padding: 0.8em 12px;
+	font-weight: 500;
+}
