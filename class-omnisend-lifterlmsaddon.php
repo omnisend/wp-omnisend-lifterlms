@@ -96,7 +96,7 @@ class Omnisend_LifterLMSAddOn {
 
 		if ( ! Omnisend\SDK\V1\Omnisend::is_connected() ) {
 			deactivate_plugins( $lifterlms_addon_plugin );
-			add_action( 'admin_notices', array( 'Omnisend_LifterLMSAddOn', 'omnisend_api_key_notice' ) );
+			add_action( 'admin_notices', array( 'Omnisend_LifterLMSAddOn', 'omnisend_is_not_connected_notice' ) );
 
 			return;
 		}
@@ -112,9 +112,9 @@ class Omnisend_LifterLMSAddOn {
 	}
 
 	/**
-	 * Display a notice for the missing Omnisend API key.
-	 */
-	public static function omnisend_api_key_notice(): void {
+	 * Display a notice if Omnisend is not connected.
+	 * */
+	public static function omnisend_is_not_connected_notice(): void {
 		echo '<div class="error"><p>' . esc_html__( 'Your Omnisend is not configured properly. Please configure it firstly', 'omnisend-lifterlms' ) . '</p></div>';
 	}
 
