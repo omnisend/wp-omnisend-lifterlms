@@ -6,7 +6,7 @@
  * Author: Omnisend
  * Author URI: https://www.omnisend.com
  * Developer: Omnisend
- * Developer URI: https://developers.omnisend.com
+ * Developer URI: https://omnisend.com
  * Text Domain: omnisend-for-lifterlms-add-on
  * ------------------------------------------------------------------------
  * Copyright 2024 Omnisend
@@ -87,9 +87,16 @@ class Omnisend_LifterLMSAddOn {
 
 		$omnisend_plugin = 'omnisend/class-omnisend-core-bootstrap.php';
 
-		if ( ! file_exists( WP_PLUGIN_DIR . '/' . $omnisend_plugin ) || ! is_plugin_active( $omnisend_plugin ) ) {
+		if ( ! file_exists( WP_PLUGIN_DIR . '/' . $omnisend_plugin ) ) {
 			deactivate_plugins( $lifterlms_addon_plugin );
-			add_action( 'admin_notices', array( 'Omnisend_LifterLMSAddOn', 'omnisend_notice' ) );
+			add_action( 'admin_notices', array( 'Omnisend_LifterLMSAddOn', 'omnisend_is_not_installed_notice' ) );
+
+			return;
+		}
+
+		if ( ! is_plugin_active( $omnisend_plugin ) ) {
+			deactivate_plugins( $lifterlms_addon_plugin );
+			add_action( 'admin_notices', array( 'Omnisend_LifterLMSAddOn', 'omnisend_deactivated_notice' ) );
 
 			return;
 		}
@@ -113,23 +120,23 @@ class Omnisend_LifterLMSAddOn {
 
 	/**
 	 * Display a notice if Omnisend is not connected.
-	 * */
-	public static function omnisend_is_not_connected_notice(): void {
-		echo '<div class="error"><p>' . esc_html__( 'Your Omnisend is not configured properly. Please configure it firstly', 'omnisend-lifterlms' ) . '</p></div>';
+	 */
+	public static function omnisend_is_not_connected_notice() {
+		echo '<div class="error"><p>' . esc_html__( 'Your Omnisend is not configured properly. Please configure it by connecting to your Omnisend account.', 'omnisend-paid-memberships-pro' ) . '<a href="https://wordpress.org/plugins/omnisend/">' . esc_html__( 'Omnisend plugin.', 'omnisend-paid-memberships-pro' ) . '</a></p></div>';
 	}
 
 	/**
 	 * Display a notice for the missing Omnisend Plugin.
 	 */
-	public static function omnisend_notice(): void {
-		echo '<div class="error"><p>' . esc_html__( 'Plugin Omnisend is deactivated. Please install and activate ', 'omnisend-lifterlms' ) . '<a href="https://wordpress.org/plugins/omnisend/">' . esc_html__( 'Omnisend plugin.', 'omnisend-lifterlms' ) . '</a></p></div>';
+	public static function omnisend_is_not_installed_notice() {
+		echo '<div class="error"><p>' . esc_html__( 'Omnisend plugin is not installed. Please install it and connect to your Omnisend account.', 'omnisend-paid-memberships-pro' ) . '<a href="https://wordpress.org/plugins/omnisend/">' . esc_html__( 'Omnisend plugin.', 'omnisend-paid-memberships-pro' ) . '</a></p></div>';
 	}
 
 	/**
-	 * Display a notice for the missing LifterLMS plugin.
+	 * Display a notice for deactivated Omnisend Plugin.
 	 */
-	public static function lifterlms_notice(): void {
-		echo '<div class="error"><p>' . esc_html__( 'Plugin Omnisend for LifterLMS Add-On is deactivated. Please install and activate LifterLMS plugin.', 'omnisend-lifterlms' ) . '</p></div>';
+	public static function omnisend_deactivated_notice() {
+		echo '<div class="error"><p>' . esc_html__( 'Plugin Omnisend is deactivated. Please activate and connect to your Omnisend account.', 'omnisend-paid-memberships-pro' ) . '<a href="https://wordpress.org/plugins/omnisend/">' . esc_html__( 'Omnisend plugin.', 'omnisend-paid-memberships-pro' ) . '</a></p></div>';
 	}
 
 	/**
