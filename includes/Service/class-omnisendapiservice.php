@@ -135,9 +135,9 @@ class OmnisendApiService {
 	}
 
 	/**
-	 * Creates an Omnisend contacts from existing users when plugin is activated.
+	 * Creates Omnisend contacts from existing users when plugin is activated.
 	 */
-	public function create_users_as_omnisend_contact(): void {
+	public function create_users_as_omnisend_contacts(): void {
 		$all_users       = get_users();
 		$non_admin_users = array_filter(
 			$all_users,
@@ -169,7 +169,7 @@ class OmnisendApiService {
 				'courses'     => $all_user_courses,
 			);
 
-			$contact = $this->contact_mapper->sync_contact( $user_info );
+			$contact = $this->contact_mapper->create_contact_from_user_info( $user_info );
 			$this->client->save_contact( $contact );
 		}
 	}
@@ -203,7 +203,7 @@ class OmnisendApiService {
 	 */
 	public function get_student_courses( $user_id ): array {
 		$student          = new LLMS_Student( $user_id );
-		$courses          = $student->get_enrollments( 'course' );
+		$courses          = $student->get_courses();
 		$all_user_courses = array();
 
 		if ( ! empty( $courses ) ) {

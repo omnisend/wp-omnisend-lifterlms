@@ -144,11 +144,11 @@ class Omnisend_LifterLMSAddOn {
 	 * Check if addon is activated for the first time
 	 */
 	public static function lifterlms_plugin_activate() {
-		if ( is_admin() && get_option( 'lifterlms_activated_plugin' ) != 'lifterlms_plugin' ) {
+		if ( is_admin() && ! get_option( 'lifterlms_initial_sync_made' ) ) {
 			$omnisend_api_service = new OmnisendApiService();
-			$omnisend_api_service->create_users_as_omnisend_contact();
+			$omnisend_api_service->create_users_as_omnisend_contacts();
 
-			add_option( 'lifterlms_activated_plugin', 'lifterlms_plugin' );
+			add_option( 'lifterlms_initial_sync_made', true );
 		}
 	}
 
