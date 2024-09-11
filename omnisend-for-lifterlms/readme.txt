@@ -1,4 +1,4 @@
-=== Omnisend for LifterLMS 7 Add-On ===
+=== Omnisend for LifterLMS Add-On ===
 Plugin Name: Omnisend for LifterLMS Add-On
 Contributors: omnisend
 Tags: LifterLMS, form, email marketing, web tracking, subscriber collection
@@ -38,9 +38,6 @@ Read Omnisend [Terms of Use](https://www.omnisend.com/terms)
 
 = Where can I find Omnisend Privacy Policy? =
 Read Omnisend [Terms of Use](https://www.omnisend.com/privacy/)
-
-= How can I report security bugs?
-You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/omnisend-for-contact-form-7)
 
 
 = 1.0.0 =
