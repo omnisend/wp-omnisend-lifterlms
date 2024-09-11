@@ -39,7 +39,17 @@ Read Omnisend [Terms of Use](https://www.omnisend.com/terms)
 = Where can I find Omnisend Privacy Policy? =
 Read Omnisend [Terms of Use](https://www.omnisend.com/privacy/)
 
+== Screenshots ==
 
+1. Build beautiful campaigns using our email templates
+2. Drive revenue round the clock and recover sales with pre-built automated workflows
+3. Send emails, newsletters & SMS campaigns
+4. Access all features on the generous free-forever plan
+5. Grow your audience with popups incl exit-intent, signup forms & spin-to-win
+6. Fast support, available 24/77. Actionable insights to help create more personalized messages
+7. Convert more visitors with highly-targeted landing pages
+
+== Changelog ==
 = 1.0.0 =
 
 * Initial release.
