@@ -16,6 +16,7 @@ code-snippets
 # Composer
 composer.phar
 /vendor/
+
 # Local wordpress setup
 .wordpress
 .env
