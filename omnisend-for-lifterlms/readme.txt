@@ -14,7 +14,7 @@ Email Marketing, Newsletter, Email Automation, Forms, Pop Up, SMS by Omnisend
 
 == DESCRIPTION ==
 
-Omnisend for LifterLMS - automatically sync contacts, new subscribers, their courses & membership levels to Omnisend. LifterLMS is a powerful WordPress learning management system plugin that makes it easy to create, sell, and protect engaging online courses and training based membership websites.
+Omnisend for LifterLMS - automatically sync contacts, new subscribers, their courses & membership levels to Omnisend. [LifterLMS](https://lifterlms.com/) is a powerful WordPress learning management system plugin that makes it easy to create, sell, and protect engaging online courses and training based membership websites.
 
 == REQUIREMENTS ==
 
