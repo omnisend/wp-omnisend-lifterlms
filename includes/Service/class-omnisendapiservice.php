@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Omnisend\LifterLMSAddon\Service;
 
+use LLMS_Student;
 use Omnisend\LifterLMSAddon\Actions\OmnisendAddOnAction;
 use Omnisend\LifterLMSAddon\Mapper\ContactMapper;
 use Omnisend\LifterLMSAddon\Validator\ResponseValidator;
@@ -131,6 +132,90 @@ class OmnisendApiService {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Creates Omnisend contacts from existing users when plugin is activated.
+	 */
+	public function create_users_as_omnisend_contacts(): void {
+		$all_users       = get_users();
+		$non_admin_users = array_filter(
+			$all_users,
+			function ( $user ) {
+				return ! in_array( 'administrator', $user->roles );
+			}
+		);
+
+		if ( empty( $non_admin_users ) ) {
+			return;
+		}
+
+		foreach ( $non_admin_users as $user ) {
+			$all_user_memberships = $this->get_student_memberships( $user->ID );
+			$all_user_courses     = $this->get_student_courses( $user->ID );
+
+			$user_info = array(
+				'first_name'  => get_user_meta( $user->ID, 'first_name', true ),
+				'last_name'   => get_user_meta( $user->ID, 'last_name', true ),
+				'address1'    => get_user_meta( $user->ID, 'llms_billing_address_1', true ),
+				'address2'    => get_user_meta( $user->ID, 'llms_billing_address_2', true ),
+				'city'        => get_user_meta( $user->ID, 'llms_billing_city', true ),
+				'state'       => get_user_meta( $user->ID, 'llms_billing_state', true ),
+				'zipcode'     => get_user_meta( $user->ID, 'llms_billing_zip', true ),
+				'country'     => get_user_meta( $user->ID, 'llms_billing_country', true ),
+				'phone'       => get_user_meta( $user->ID, 'llms_phone', true ),
+				'email'       => $user->data->user_email,
+				'memberships' => $all_user_memberships,
+				'courses'     => $all_user_courses,
+			);
+
+			$contact = $this->contact_mapper->create_contact_from_user_info( $user_info );
+			$this->client->save_contact( $contact );
+		}
+	}
+
+	/**
+	 * get student memberships by user id
+	 *
+	 * @return array all enrolled membership names.
+	 */
+	public function get_student_memberships( $user_id ): array {
+		$student              = new LLMS_Student( $user_id );
+		$memberships          = $student->get_memberships();
+		$all_user_memberships = array();
+
+		if ( ! empty( $memberships ) ) {
+			foreach ( $memberships as $membership_id ) {
+				$membership_title = get_the_title( $membership_id );
+				if ( $membership_title != '' ) {
+					$all_user_memberships[] = $membership_title;
+				}
+			}
+		}
+
+		return $all_user_memberships;
+	}
+
+	/**
+	 * get student courses by user id
+	 *
+	 * @return array all enrolled courses names.
+	 */
+	public function get_student_courses( $user_id ): array {
+		$student          = new LLMS_Student( $user_id );
+		$courses          = $student->get_courses();
+		$all_user_courses = array();
+
+		if ( ! empty( $courses ) ) {
+			foreach ( $courses as $course_id ) {
+				$course_title = get_the_title( $course_id );
+				if ( $course_title != '' ) {
+					$all_user_courses[] = $course_title;
+				}
+			}
+		}
+
+		return $all_user_courses;
 	}
 
 	/**

@@ -19,6 +19,7 @@
 use Omnisend\LifterLMSAddon\Actions\OmnisendAddOnAction;
 use Omnisend\LifterLMSAddon\Service\SettingsService;
 use Omnisend\LifterLMSAddon\Service\ConsentService;
+use Omnisend\LifterLMSAddon\Service\OmnisendApiService;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -30,8 +31,8 @@ define( 'OMNISEND_LIFTERLMS_ADDON_VERSION', '1.0.0' );
 spl_autoload_register( array( 'Omnisend_LifterLMSAddOn', 'autoloader' ) );
 add_action( 'plugins_loaded', array( 'Omnisend_LifterLMSAddOn', 'check_plugin_requirements' ) );
 add_action( 'admin_enqueue_scripts', array( 'Omnisend_LifterLMSAddOn', 'load_custom_wp_admin_style' ) );
-
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( 'Omnisend_LifterLMSAddOn', 'add_settings_link' ) );
+register_activation_hook( __FILE__, array( 'Omnisend_LifterLMSAddOn', 'lifterlms_plugin_activate' ) );
 
 $omnisend_lifterlms_addon_settings = new SettingsService();
 $omnisend_lifterlms_addon_consent  = new ConsentService();
@@ -137,6 +138,18 @@ class Omnisend_LifterLMSAddOn {
 	 */
 	public static function omnisend_deactivated_notice() {
 		echo '<div class="error"><p>' . esc_html__( 'Plugin Omnisend is deactivated. Please activate and connect to your Omnisend account.', 'omnisend-paid-memberships-pro' ) . '<a href="https://wordpress.org/plugins/omnisend/">' . esc_html__( 'Omnisend plugin.', 'omnisend-paid-memberships-pro' ) . '</a></p></div>';
+	}
+
+	/**
+	 * Check if addon is activated for the first time
+	 */
+	public static function lifterlms_plugin_activate() {
+		if ( is_admin() && ! get_option( 'lifterlms_initial_sync_made' ) ) {
+			$omnisend_api_service = new OmnisendApiService();
+			$omnisend_api_service->create_users_as_omnisend_contacts();
+
+			add_option( 'lifterlms_initial_sync_made', true );
+		}
 	}
 
 	/**
