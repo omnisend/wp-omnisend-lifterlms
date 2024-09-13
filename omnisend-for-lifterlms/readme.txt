@@ -3,7 +3,7 @@ Plugin Name: Omnisend for LifterLMS Add-On
 Contributors: omnisend
 Tags: LifterLMS, form, email marketing, web tracking, subscriber collection
 Requires at least: 4.7.0
-Tested up to: 6.4
+Tested up to: 6.6
 Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPLv3 or later
