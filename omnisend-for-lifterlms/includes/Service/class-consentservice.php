@@ -115,7 +115,7 @@ class ConsentService {
 		if ( isset( $user_id ) && isset( $_POST['_llms_register_person_nonce'] ) && check_admin_referer( 'llms_register_person', '_llms_register_person_nonce' ) ) {
 
 			$register_fields                           = array();
-			$register_fields['email_address']          = sanitize_email( wp_unslash( $_POST['bfirstname'] ?? '' ) );
+			$register_fields['email_address']          = sanitize_email( wp_unslash( $_POST['email_address'] ?? '' ) );
 			$register_fields['llms_phone']             = sanitize_text_field( wp_unslash( $_POST['llms_phone'] ?? '' ) );
 			$register_fields['first_name']             = sanitize_text_field( wp_unslash( $_POST['first_name'] ?? '' ) );
 			$register_fields['last_name']              = sanitize_text_field( wp_unslash( $_POST['last_name'] ?? '' ) );
@@ -147,7 +147,7 @@ class ConsentService {
 	public function omnisend_update_register_fields( $user_id ): void {
 		if ( isset( $user_id ) && isset( $_POST['_llms_update_person_nonce'] ) && check_admin_referer( 'llms_update_person', '_llms_update_person_nonce' ) ) {
 			$update_register_fields                           = array();
-			$update_register_fields['email_address']          = sanitize_email( wp_unslash( $_POST['bfirstname'] ?? '' ) );
+			$update_register_fields['email_address']          = sanitize_email( wp_unslash( $_POST['email_address'] ?? '' ) );
 			$update_register_fields['llms_phone']             = sanitize_text_field( wp_unslash( $_POST['llms_phone'] ?? '' ) );
 			$update_register_fields['first_name']             = sanitize_text_field( wp_unslash( $_POST['first_name'] ?? '' ) );
 			$update_register_fields['last_name']              = sanitize_text_field( wp_unslash( $_POST['last_name'] ?? '' ) );
