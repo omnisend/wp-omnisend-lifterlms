@@ -7,7 +7,7 @@
  * Author URI: https://www.omnisend.com
  * Developer: Omnisend
  * Developer URI: https://omnisend.com
- * Text Domain: omnisend-for-lifterlms-add-on
+ * Text Domain: omnisend-for-lifterlms
  * ------------------------------------------------------------------------
  * Copyright 2024 Omnisend
  * License: GNU General Public License v3.0
