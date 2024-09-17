@@ -113,8 +113,29 @@ class ConsentService {
 	 */
 	public function omnisend_save_register_fields( $user_id ): void {
 		if ( isset( $user_id ) && isset( $_POST['_llms_register_person_nonce'] ) && check_admin_referer( 'llms_register_person', '_llms_register_person_nonce' ) ) {
+
+			$register_fields                           = array();
+			$register_fields['email_address']          = sanitize_email( wp_unslash( $_POST['email_address'] ?? '' ) );
+			$register_fields['llms_phone']             = sanitize_text_field( wp_unslash( $_POST['llms_phone'] ?? '' ) );
+			$register_fields['first_name']             = sanitize_text_field( wp_unslash( $_POST['first_name'] ?? '' ) );
+			$register_fields['last_name']              = sanitize_text_field( wp_unslash( $_POST['last_name'] ?? '' ) );
+			$register_fields['llms_billing_zip']       = sanitize_text_field( wp_unslash( $_POST['llms_billing_zip'] ?? '' ) );
+			$register_fields['llms_billing_address_1'] = sanitize_text_field( wp_unslash( $_POST['llms_billing_address_1'] ?? '' ) );
+			$register_fields['llms_billing_address_2'] = sanitize_text_field( wp_unslash( $_POST['llms_billing_address_2'] ?? '' ) );
+			$register_fields['llms_billing_state']     = sanitize_text_field( wp_unslash( $_POST['llms_billing_state'] ?? '' ) );
+			$register_fields['llms_billing_country']   = sanitize_text_field( wp_unslash( $_POST['llms_billing_country'] ?? '' ) );
+			$register_fields['llms_billing_city']      = sanitize_text_field( wp_unslash( $_POST['llms_billing_city'] ?? '' ) );
+
+			if ( isset( $_POST['llmsconsentEmail'] ) ) {
+				$register_fields['llmsconsentEmail'] = sanitize_text_field( wp_unslash( $_POST['llmsconsentEmail'] ) );
+			}
+
+			if ( isset( $_POST['llmsconsentPhone'] ) ) {
+				$register_fields['llmsconsentPhone'] = sanitize_text_field( wp_unslash( $_POST['llmsconsentPhone'] ) );
+			}
+
 			$omnisend_api = new OmnisendApiService();
-			$omnisend_api->create_omnisend_contact( $_REQUEST );
+			$omnisend_api->create_omnisend_contact( $register_fields );
 		}
 	}
 
@@ -125,8 +146,28 @@ class ConsentService {
 	 */
 	public function omnisend_update_register_fields( $user_id ): void {
 		if ( isset( $user_id ) && isset( $_POST['_llms_update_person_nonce'] ) && check_admin_referer( 'llms_update_person', '_llms_update_person_nonce' ) ) {
+			$update_register_fields                           = array();
+			$update_register_fields['email_address']          = sanitize_email( wp_unslash( $_POST['email_address'] ?? '' ) );
+			$update_register_fields['llms_phone']             = sanitize_text_field( wp_unslash( $_POST['llms_phone'] ?? '' ) );
+			$update_register_fields['first_name']             = sanitize_text_field( wp_unslash( $_POST['first_name'] ?? '' ) );
+			$update_register_fields['last_name']              = sanitize_text_field( wp_unslash( $_POST['last_name'] ?? '' ) );
+			$update_register_fields['llms_billing_zip']       = sanitize_text_field( wp_unslash( $_POST['llms_billing_zip'] ?? '' ) );
+			$update_register_fields['llms_billing_address_1'] = sanitize_text_field( wp_unslash( $_POST['llms_billing_address_1'] ?? '' ) );
+			$update_register_fields['llms_billing_address_2'] = sanitize_text_field( wp_unslash( $_POST['llms_billing_address_2'] ?? '' ) );
+			$update_register_fields['llms_billing_state']     = sanitize_text_field( wp_unslash( $_POST['llms_billing_state'] ?? '' ) );
+			$update_register_fields['llms_billing_country']   = sanitize_text_field( wp_unslash( $_POST['llms_billing_country'] ?? '' ) );
+			$update_register_fields['llms_billing_city']      = sanitize_text_field( wp_unslash( $_POST['llms_billing_city'] ?? '' ) );
+
+			if ( isset( $_POST['llmsconsentEmail'] ) ) {
+				$update_register_fields['llmsconsentEmail'] = sanitize_text_field( wp_unslash( $_POST['llmsconsentEmail'] ) );
+			}
+
+			if ( isset( $_POST['llmsconsentPhone'] ) ) {
+				$update_register_fields['llmsconsentPhone'] = sanitize_text_field( wp_unslash( $_POST['llmsconsentPhone'] ) );
+			}
+
 			$omnisend_api = new OmnisendApiService();
-			$omnisend_api->update_omnisend_contact( $_REQUEST );
+			$omnisend_api->update_omnisend_contact( $update_register_fields );
 		}
 	}
 
