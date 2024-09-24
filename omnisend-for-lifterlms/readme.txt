@@ -5,7 +5,7 @@ Tags: LifterLMS, form, email marketing, web tracking, subscriber collection
 Requires at least: 4.7.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
