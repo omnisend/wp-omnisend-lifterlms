@@ -39,6 +39,9 @@ Read Omnisend [Terms of Use](https://www.omnisend.com/terms)
 = Where can I find Omnisend Privacy Policy? =
 Read Omnisend [Terms of Use](https://www.omnisend.com/privacy/)
 
+= How can I report security bugs? =
+You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/omnisend-for-lifterlms-add-on)
+
 == Screenshots ==
 
 1. Build beautiful campaigns using our email templates
