@@ -5,7 +5,7 @@ Tags: LifterLMS, form, email marketing, web tracking, subscriber collection
 Requires at least: 4.7.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -38,6 +38,9 @@ Read Omnisend [Terms of Use](https://www.omnisend.com/terms)
 
 = Where can I find Omnisend Privacy Policy? =
 Read Omnisend [Terms of Use](https://www.omnisend.com/privacy/)
+
+= How can I report security bugs? =
+You can report security bugs through the Patchstack Vulnerability Disclosure Program. The Patchstack team help validate, triage and handle any security vulnerabilities. [Report a security vulnerability.](https://patchstack.com/database/vdp/omnisend-for-lifterlms-add-on)
 
 == Screenshots ==
 
