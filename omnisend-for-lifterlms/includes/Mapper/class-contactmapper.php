@@ -99,7 +99,7 @@ class ContactMapper {
 		$contact->set_city( $mapped_fields['llms_billing_city'] ?? '' );
 		$contact->set_welcome_email( true );
 
-		if ( ! isset( $options['filter_lms_consent_setting'] ) ) {
+		if ( isset( $options['filter_lms_consent_setting'] ) ) {
 			if ( isset( $mapped_fields['llmsconsentEmail'] ) ) {
 				$contact->set_email_subscriber();
 				$contact->set_email_consent( self::CONSENT_PREFIX );
@@ -158,15 +158,16 @@ class ContactMapper {
 	/**
 	 * Custom function to add/remove memberships depending on current saved courses
 	 *
-	 * @param array $contract_data
+	 * @param Contact $contract_data
 	 * @param int $course_id
 	 * @param string $action
 	 *
 	 * @return Contact object
 	 */
-	public function update_courses_omnisend_contract( array $contract_data, int $course_id = 0, string $action = 'add' ): Contact {
-		$current_contract_courses = $contract_data['customProperties']['courses'] ?? array();
-		$user_email               = $contract_data['email'];
+	public function update_courses_omnisend_contract( Contact $contract_data, int $course_id = 0, string $action = 'add' ): Contact {
+		$custom_properties        = $contract_data->get_custom_properties();
+		$current_contract_courses = isset( $custom_properties['courses'] ) ? $custom_properties['courses'] : array();
+		$user_email               = $contract_data->get_email();
 
 		$course_name = get_the_title( $course_id );
 		if ( ! in_array( $course_name, $current_contract_courses ) && '' != $course_name ) {
@@ -183,6 +184,7 @@ class ContactMapper {
 		if ( empty( $current_contract_courses ) || null ) {
 			$current_contract_courses = '';
 		}
+
 		$contact->add_custom_property( 'courses', $current_contract_courses );
 		$contact->add_tag( self::CUSTOM_PREFIX );
 
@@ -192,15 +194,16 @@ class ContactMapper {
 	/**
 	 * Custom function to add/remove memberships depending on current saved memberships
 	 *
-	 * @param array $contract_data
+	 * @param Contact $contract_data
 	 * @param int $membership_id
 	 * @param string $action
 	 *
 	 * @return Contact object
 	 */
-	public function update_memberships_omnisend_contract( array $contract_data, int $membership_id = 0, string $action = 'add' ): Contact {
-		$current_contract_memberships = $contract_data['customProperties']['memberships'] ?? array();
-		$user_email                   = $contract_data['email'];
+	public function update_memberships_omnisend_contract( Contact $contract_data, int $membership_id = 0, string $action = 'add' ): Contact {
+		$custom_properties            = $contract_data->get_custom_properties();
+		$current_contract_memberships = isset( $custom_properties['memberships'] ) ? $custom_properties['memberships'] : array();
+		$user_email                   = $contract_data->get_email();
 
 		$membership_name = get_the_title( $membership_id );
 		if ( ! in_array( $membership_name, $current_contract_memberships ) && '' != $membership_name ) {

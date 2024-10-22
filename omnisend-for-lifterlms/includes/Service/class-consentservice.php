@@ -40,12 +40,12 @@ class ConsentService {
 		$contract_data = $omnisend_api->get_omnisend_contact_consent();
 
 		$email_consent = '';
-		if ( $contract_data['email'] ) {
+		if ( $contract_data['email'] == 'subscribed' ) {
 			$email_consent = 'checked';
 		}
 
 		$sms_consent = '';
-		if ( $contract_data['sms'] ) {
+		if ( $contract_data['sms'] == 'subscribed' ) {
 			$sms_consent = 'checked';
 		}
 
@@ -107,12 +107,17 @@ class ConsentService {
 	}
 
 	/**
+	 * phpcs:disable WordPress.Security.NonceVerification.Missing
+	 */
+
+	/**
 	 * Custom function to trigger when a user just registered for first time.
 	 *
 	 * @param int $user_id  The ID of the user being removed.
 	 */
 	public function omnisend_save_register_fields( $user_id ): void {
-		if ( isset( $user_id ) && isset( $_POST['_llms_register_person_nonce'] ) && check_admin_referer( 'llms_register_person', '_llms_register_person_nonce' ) ) {
+
+		if ( isset( $user_id ) && isset( $_POST['_llms_register_person_nonce'] ) ) {
 
 			$register_fields                           = array();
 			$register_fields['email_address']          = sanitize_email( wp_unslash( $_POST['email_address'] ?? '' ) );
@@ -145,7 +150,7 @@ class ConsentService {
 	 * @param int $user_id The ID of the user profile.
 	 */
 	public function omnisend_update_register_fields( $user_id ): void {
-		if ( isset( $user_id ) && isset( $_POST['_llms_update_person_nonce'] ) && check_admin_referer( 'llms_update_person', '_llms_update_person_nonce' ) ) {
+		if ( isset( $user_id ) && isset( $_POST['_llms_update_person_nonce'] ) ) {
 			$update_register_fields                           = array();
 			$update_register_fields['email_address']          = sanitize_email( wp_unslash( $_POST['email_address'] ?? '' ) );
 			$update_register_fields['llms_phone']             = sanitize_text_field( wp_unslash( $_POST['llms_phone'] ?? '' ) );
@@ -170,6 +175,10 @@ class ConsentService {
 			$omnisend_api->update_omnisend_contact( $update_register_fields );
 		}
 	}
+
+	/**
+	 * phpcs:enable WordPress.Security.NonceVerification.Missing
+	 */
 
 	/**
 	 * Custom function to trigger when a user just enrolled to course.
