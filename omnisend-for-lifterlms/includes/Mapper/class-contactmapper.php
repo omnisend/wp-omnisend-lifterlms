@@ -45,7 +45,7 @@ class ContactMapper {
 
 		$contact->set_welcome_email( true );
 
-		if ( ! isset( $options['filter_lms_consent_setting'] ) ) {
+		if ( isset( $options['filter_lms_consent_setting'] ) ) {
 			if ( isset( $mapped_fields['llmsconsentEmail'] ) ) {
 				$contact->set_email_subscriber();
 				$contact->set_email_consent( self::CONSENT_PREFIX );
