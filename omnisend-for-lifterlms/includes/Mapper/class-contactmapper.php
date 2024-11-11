@@ -89,7 +89,7 @@ class ContactMapper {
 		$user_email   = $current_user->user_email;
 
 		$contact->set_email( $user_email );
-		$contact->set_phone( $mapped_fields['llms_phone'] );
+		$contact->set_phone( $mapped_fields['llms_phone'] ?? '' );
 		$contact->set_first_name( $mapped_fields['first_name'] ?? '' );
 		$contact->set_last_name( $mapped_fields['last_name'] ?? '' );
 		$contact->set_postal_code( $mapped_fields['llms_billing_zip'] ?? '' );
