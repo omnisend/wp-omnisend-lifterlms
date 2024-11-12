@@ -238,4 +238,26 @@ class OmnisendApiService {
 		}
 		return $contract_data;
 	}
+
+
+	/**
+	 * Update an Omnisend contact consent data.
+	 *
+	 * @param array $update_data The user consent data.
+	 * @param string $user_email The user email address.
+	 */
+	public function update_consent( array $update_data, string $user_email ): void {
+		$response = $this->client->get_contact_by_email( $user_email );
+
+		if ( $response->get_contact()->get_email_status() == 'subscribed' ) {
+			$update_data['llmsconsentEmail'] = 1;
+		}
+
+		if ( $response->get_contact()->get_phone_status() == 'subscribed' ) {
+			$update_data['llmsconsentPhone'] = 1;
+		}
+
+		$contact = $this->contact_mapper->update_contact( $update_data );
+		$this->client->save_contact( $contact );
+	}
 }
