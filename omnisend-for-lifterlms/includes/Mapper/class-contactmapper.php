@@ -93,7 +93,7 @@ class ContactMapper {
 		$contact->set_first_name( $mapped_fields['first_name'] ?? '' );
 		$contact->set_last_name( $mapped_fields['last_name'] ?? '' );
 		$contact->set_postal_code( $mapped_fields['llms_billing_zip'] ?? '' );
-		$contact->set_address( $mapped_fields['llms_billing_address_1'] . ' ' . $mapped_fields['llms_billing_address_2'] ?? '' );
+		$contact->set_address( ( $mapped_fields['llms_billing_address_1'] ?? '' ) . ' ' . ( $mapped_fields['llms_billing_address_2'] ?? '' ) );
 		$contact->set_state( $mapped_fields['llms_billing_state'] ?? '' );
 		$contact->set_country( $mapped_fields['llms_billing_country'] ?? '' );
 		$contact->set_city( $mapped_fields['llms_billing_city'] ?? '' );
