@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Omnisend\LifterLMSAddon\Service;
 
 use LLMS_Order;
+use Throwable;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -40,8 +41,16 @@ class ConsentService {
 	}
 
 	public function add_consent_llms_form_fields( $html, $location ): string {
-		$omnisend_api  = new OmnisendApiService();
-		$contract_data = $omnisend_api->get_omnisend_contact_consent();
+		$omnisend_api = new OmnisendApiService();
+
+		try {
+			$contract_data = $omnisend_api->get_omnisend_contact_consent();
+		} catch ( Throwable $ex ) {
+			$contract_data = array(
+				'email' => '',
+				'sms'   => '',
+			);
+		}
 
 		$email_consent = '';
 		if ( $contract_data['email'] == 'subscribed' ) {
