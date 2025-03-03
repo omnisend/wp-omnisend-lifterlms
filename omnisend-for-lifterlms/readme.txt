@@ -5,7 +5,7 @@ Tags: LifterLMS, form, email marketing, web tracking, subscriber collection
 Requires at least: 4.7.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -53,6 +53,10 @@ You can report security bugs through the Patchstack Vulnerability Disclosure Pro
 7. Convert more visitors with highly-targeted landing pages
 
 == Changelog ==
+
+= 1.0.7 =
+* Update screenshots
+
 = 1.0.0 =
 
 * Initial release.
