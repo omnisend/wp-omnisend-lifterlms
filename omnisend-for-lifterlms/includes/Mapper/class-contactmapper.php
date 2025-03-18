@@ -22,10 +22,12 @@ class ContactMapper {
 	private const CUSTOM_PREFIX  = 'lifter_lms';
 	private const CONSENT_PREFIX = 'lifter_lms';
 
-	/**LifterLMSAddon
+	/**
+	 * LifterLMSAddon
+	 *
 	 * Get Contact object
 	 *
-	 * @param array  $mapped_fields
+	 * @param array $mapped_fields
 	 *
 	 * @return Contact object
 	 */
@@ -74,10 +76,12 @@ class ContactMapper {
 		return $contact;
 	}
 
-	/**LifterLMSAddon
+	/**
+	 * LifterLMSAddon
+	 *
 	 * Update Contact object
 	 *
-	 * @param array  $mapped_fields
+	 * @param array $mapped_fields
 	 *
 	 * @return Contact object
 	 */

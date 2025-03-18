@@ -21,7 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @package Omnisend\OmnisendLifterLMSPlugin\Validator
  */
 class ResponseValidator {
-
 	/**
 	 * Validates response.
 	 *

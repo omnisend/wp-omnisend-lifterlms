@@ -14,6 +14,8 @@ use Omnisend\LifterLMSAddon\Actions\OmnisendAddOnAction;
 use Omnisend\LifterLMSAddon\Mapper\ContactMapper;
 use Omnisend\LifterLMSAddon\Validator\ResponseValidator;
 use Omnisend\SDK\V1\Omnisend;
+use Omnisend\SDK\V1\Batch;
+use WP_User;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -23,6 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Omnisend API Service.
  */
 class OmnisendApiService {
+	private const CONTACT_BATCH_LIMIT = 60;
+
 	/**
 	 * Contact mapper.
 	 *
@@ -33,7 +37,7 @@ class OmnisendApiService {
 	/**
 	 * Omnisend client
 	 *
-	 * @var Omnisend
+	 * @var Client
 	 */
 	private $client;
 
@@ -82,6 +86,7 @@ class OmnisendApiService {
 	 *
 	 * @param array $form_data The form data.
 	 *
+	 * @return void
 	 */
 	public function update_omnisend_contact( array $form_data ): void {
 		$contact = $this->contact_mapper->update_contact( $form_data );
@@ -136,46 +141,91 @@ class OmnisendApiService {
 
 	/**
 	 * Creates Omnisend contacts from existing users when plugin is activated.
+	 *
+	 * @return void
 	 */
 	public function create_users_as_omnisend_contacts(): void {
-		$all_users       = get_users();
-		$non_admin_users = array_filter(
-			$all_users,
-			function ( $user ) {
-				return ! in_array( 'administrator', $user->roles );
-			}
-		);
+		$cycle = 0;
 
-		if ( empty( $non_admin_users ) ) {
-			return;
-		}
-
-		foreach ( $non_admin_users as $user ) {
-			$all_user_memberships = $this->get_student_memberships( $user->ID );
-			$all_user_courses     = $this->get_student_courses( $user->ID );
-
-			$user_info = array(
-				'first_name'  => get_user_meta( $user->ID, 'first_name', true ),
-				'last_name'   => get_user_meta( $user->ID, 'last_name', true ),
-				'address1'    => get_user_meta( $user->ID, 'llms_billing_address_1', true ),
-				'address2'    => get_user_meta( $user->ID, 'llms_billing_address_2', true ),
-				'city'        => get_user_meta( $user->ID, 'llms_billing_city', true ),
-				'state'       => get_user_meta( $user->ID, 'llms_billing_state', true ),
-				'zipcode'     => get_user_meta( $user->ID, 'llms_billing_zip', true ),
-				'country'     => get_user_meta( $user->ID, 'llms_billing_country', true ),
-				'phone'       => get_user_meta( $user->ID, 'llms_phone', true ),
-				'email'       => $user->data->user_email,
-				'memberships' => $all_user_memberships,
-				'courses'     => $all_user_courses,
+		while ( true ) {
+			$contacts  = array();
+			$all_users = get_users(
+				array(
+					'number' => self::CONTACT_BATCH_LIMIT,
+					'offset' => self::CONTACT_BATCH_LIMIT * $cycle++,
+				)
 			);
 
-			$contact = $this->contact_mapper->create_contact_from_user_info( $user_info );
-			$this->client->save_contact( $contact );
+			$non_admin_users = array_filter(
+				$all_users,
+				function ( $user ) {
+					return ! in_array( 'administrator', $user->roles );
+				}
+			);
+
+			if ( empty( $non_admin_users ) ) {
+				return;
+			}
+
+			$all_users = array();
+
+			foreach ( $non_admin_users as $user ) {
+				$user_info  = $this->get_user_info( $user );
+				$contacts[] = $this->contact_mapper->create_contact_from_user_info( $user_info );
+			}
+
+			$this->send_batch( $contacts, Batch::POST_METHOD );
 		}
 	}
 
 	/**
-	 * get student memberships by user id
+	 * Gets user array with LLMS data for use as Omnisend contact
+	 *
+	 * @param WP_User $user
+	 *
+	 * @return array
+	 */
+	private function get_user_info( WP_User $user ): array {
+		$user_id = $user->ID;
+
+		return array(
+			'email'       => $user->data->user_email,
+			'first_name'  => get_user_meta( $user_id, 'first_name', true ),
+			'last_name'   => get_user_meta( $user_id, 'last_name', true ),
+			'address1'    => get_user_meta( $user_id, 'llms_billing_address_1', true ),
+			'address2'    => get_user_meta( $user_id, 'llms_billing_address_2', true ),
+			'city'        => get_user_meta( $user_id, 'llms_billing_city', true ),
+			'state'       => get_user_meta( $user_id, 'llms_billing_state', true ),
+			'zipcode'     => get_user_meta( $user_id, 'llms_billing_zip', true ),
+			'country'     => get_user_meta( $user_id, 'llms_billing_country', true ),
+			'phone'       => get_user_meta( $user_id, 'llms_phone', true ),
+			'memberships' => $this->get_student_memberships( $user_id ),
+			'courses'     => $this->get_student_courses( $user_id ),
+		);
+	}
+
+	/**
+	 * Sends batch to Omnisend
+	 *
+	 * @param array  $items
+	 * @param string $method
+	 *
+	 * @return void
+	 */
+	private function send_batch( array $items, string $method ): void {
+		if ( empty( $items ) ) {
+			return;
+		}
+
+		$batch = new Batch();
+		$batch->set_items( $items );
+		$batch->set_method( $method );
+
+		$this->client->send_batch( $batch );
+	}
+
+	/**
+	 * Get student memberships by user id
 	 *
 	 * @return array all enrolled membership names.
 	 */
@@ -184,9 +234,10 @@ class OmnisendApiService {
 		$memberships          = $student->get_memberships();
 		$all_user_memberships = array();
 
-		if ( ! empty( $memberships ) ) {
-			foreach ( $memberships as $membership_id ) {
+		if ( array_key_exists( 'results', $memberships ) && ! empty( $memberships['results'] ) ) {
+			foreach ( $memberships['results'] as $membership_id ) {
 				$membership_title = get_the_title( $membership_id );
+
 				if ( $membership_title != '' ) {
 					$all_user_memberships[] = $membership_title;
 				}
@@ -197,7 +248,7 @@ class OmnisendApiService {
 	}
 
 	/**
-	 * get student courses by user id
+	 * Get student courses by user id
 	 *
 	 * @return array all enrolled courses names.
 	 */
@@ -206,9 +257,10 @@ class OmnisendApiService {
 		$courses          = $student->get_courses();
 		$all_user_courses = array();
 
-		if ( ! empty( $courses ) ) {
-			foreach ( $courses as $course_id ) {
+		if ( array_key_exists( 'results', $courses ) && ! empty( $courses['results'] ) ) {
+			foreach ( $courses['results'] as $course_id ) {
 				$course_title = get_the_title( $course_id );
+
 				if ( $course_title != '' ) {
 					$all_user_courses[] = $course_title;
 				}
@@ -219,7 +271,7 @@ class OmnisendApiService {
 	}
 
 	/**
-	 * get an Omnisend contact by email.
+	 * Get an Omnisend contact by email.
 	 *
 	 * @return array omnisend contact consent data.
 	 */
@@ -236,6 +288,7 @@ class OmnisendApiService {
 			$contract_data['sms']   = false;
 			$contract_data['email'] = false;
 		}
+
 		return $contract_data;
 	}
 
@@ -245,6 +298,8 @@ class OmnisendApiService {
 	 *
 	 * @param array $update_data The user consent data.
 	 * @param string $user_email The user email address.
+	 *
+	 * @return void
 	 */
 	public function update_consent( array $update_data, string $user_email ): void {
 		$response = $this->client->get_contact_by_email( $user_email );
