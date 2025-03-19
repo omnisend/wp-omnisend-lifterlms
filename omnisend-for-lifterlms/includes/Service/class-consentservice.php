@@ -24,6 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ConsentService {
 	public function __construct() {
 		$options = get_option( 'omnisend_lifterlms_options' );
+
 		if ( isset( $options['filter_lms_consent_setting'] ) ) {
 			add_filter( 'llms_get_form_html', array( $this, 'add_consent_llms_form_fields' ), 10, 2 );
 		}
@@ -40,7 +41,15 @@ class ConsentService {
 		add_action( 'lifterlms_new_pending_order', array( $this, 'omnisend_update_consent_by_order' ), 10, 1 );
 	}
 
-	public function add_consent_llms_form_fields( $html, $location ): string {
+	/**
+	 * Adds consent fields to checkout
+	 *
+	 * @param string $html
+	 * @param string $location
+	 *
+	 * @return void
+	 */
+	public function add_consent_llms_form_fields( string $html, string $location ): string {
 		$omnisend_api = new OmnisendApiService();
 
 		try {
@@ -53,11 +62,13 @@ class ConsentService {
 		}
 
 		$email_consent = '';
+
 		if ( $contract_data['email'] == 'subscribed' ) {
 			$email_consent = 'checked';
 		}
 
 		$sms_consent = '';
+
 		if ( $contract_data['sms'] == 'subscribed' ) {
 			$sms_consent = 'checked';
 		}
@@ -92,6 +103,8 @@ class ConsentService {
 	 *
 	 * @param int $user_id  The ID of the user being removed.
 	 * @param int $course_id The ID of the course from which the user is being removed.
+	 *
+	 * @return void
 	 */
 	public function user_removed_from_course( int $user_id, int $course_id ): void {
 		$user_info  = get_userdata( $user_id );
@@ -106,6 +119,8 @@ class ConsentService {
 	 *
 	 * @param int $user_id  The ID of the user being removed.
 	 * @param int $course_id The ID of the course from which the user is being removed.
+	 *
+	 * @return void
 	 */
 	public function user_removed_from_membership( int $user_id, int $course_id ): void {
 		$user_info  = get_userdata( $user_id );
@@ -120,6 +135,8 @@ class ConsentService {
 	 *
 	 * @param int $user_id  The ID of the user being removed.
 	 * @param int $membership_id The ID of the course from which the user is being removed.
+	 *
+	 * @return void
 	 */
 	public function add_omnisend_memberships_data( int $user_id, int $membership_id ): void {
 		$user_info  = get_userdata( $user_id );
@@ -137,8 +154,10 @@ class ConsentService {
 	 * Custom function to trigger when a user just registered for first time.
 	 *
 	 * @param int $user_id  The ID of the user being removed.
+	 *
+	 * @return void
 	 */
-	public function omnisend_save_register_fields( $user_id ): void {
+	public function omnisend_save_register_fields( int $user_id ): void {
 		if ( ! isset( $user_id ) ) {
 			return;
 		}
@@ -173,8 +192,10 @@ class ConsentService {
 	 * Custom function to trigger when a user editing his profile.
 	 *
 	 * @param int $user_id The ID of the user profile.
+	 *
+	 * @return void
 	 */
-	public function omnisend_update_register_fields( $user_id ): void {
+	public function omnisend_update_register_fields( int $user_id ): void {
 		if ( ! isset( $user_id ) || ! isset( $_POST['_llms_update_person_nonce'] ) ) {
 			return;
 		}
@@ -212,8 +233,10 @@ class ConsentService {
 	 *
 	 * @param int $user_id  The ID of the user being enrolled.
 	 * @param int $course_id The ID of the course where user is enrolled.
+	 *
+	 * @return void
 	 */
-	public function omnisend_add_enrollment_data( int $user_id, $course_id ): void {
+	public function omnisend_add_enrollment_data( int $user_id, int $course_id ): void {
 		$user_info  = get_userdata( $user_id );
 		$user_email = $user_info->data->user_email;
 
@@ -232,6 +255,8 @@ class ConsentService {
 	 * Update an Omnisend contact consent data from order.
 	 *
 	 * @param LLMS_Order $order Order data
+	 *
+	 * @return void
 	 */
 	public function omnisend_update_consent_by_order( LLMS_Order $order ): void {
 		$options           = get_option( 'omnisend_lifterlms_options' );

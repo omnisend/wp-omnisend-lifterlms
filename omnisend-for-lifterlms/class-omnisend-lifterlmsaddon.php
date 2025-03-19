@@ -19,7 +19,7 @@
 use Omnisend\LifterLMSAddon\Actions\OmnisendAddOnAction;
 use Omnisend\LifterLMSAddon\Service\SettingsService;
 use Omnisend\LifterLMSAddon\Service\ConsentService;
-use Omnisend\LifterLMSAddon\Service\OmnisendApiService;
+use Omnisend\LifterLMSAddon\Cron\OmnisendInitialSync;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -30,9 +30,10 @@ define( 'OMNISEND_LIFTERLMS_ADDON_VERSION', '1.0.7' );
 
 spl_autoload_register( array( 'Omnisend_LifterLMSAddOn', 'autoloader' ) );
 add_action( 'plugins_loaded', array( 'Omnisend_LifterLMSAddOn', 'check_plugin_requirements' ) );
+add_action( 'activated_plugin', array( 'Omnisend_LifterLMSAddOn', 'activation_actions' ) );
 add_action( 'admin_enqueue_scripts', array( 'Omnisend_LifterLMSAddOn', 'load_custom_wp_admin_style' ) );
 add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( 'Omnisend_LifterLMSAddOn', 'add_settings_link' ) );
-register_activation_hook( __FILE__, array( 'Omnisend_LifterLMSAddOn', 'lifterlms_plugin_activate' ) );
+register_deactivation_hook( __FILE__, array( 'Omnisend_LifterLMSAddOn', 'deactivation_actions' ) );
 
 $omnisend_lifterlms_addon_settings = new SettingsService();
 $omnisend_lifterlms_addon_consent  = new ConsentService();
@@ -41,7 +42,6 @@ $omnisend_lifterlms_addon_consent  = new ConsentService();
  * Class Omnisend_LifterLMSAddOn
  */
 class Omnisend_LifterLMSAddOn {
-
 	/**
 	 * Register actions for the Omnisend Lifter LMS Add-On.
 	 *
@@ -53,6 +53,39 @@ class Omnisend_LifterLMSAddOn {
 		new OmnisendAddOnAction();
 
 		return $actions;
+	}
+
+	/**
+	 * Registers initial sync event
+	 *
+	 * @return void
+	 */
+	public static function register_sync_actions(): void {
+		new OmnisendInitialSync( true );
+	}
+
+	/**
+	 * Deletes initial sync event
+	 *
+	 * @return void
+	 */
+	public static function deactivation_actions(): void {
+		new OmnisendInitialSync( false );
+	}
+
+	/**
+	 * Redirects to settings upon activation
+	 *
+	 * @param string $plugin
+	 *
+	 * @return void
+	 */
+	public static function activation_actions( string $plugin ): void {
+		if ( $plugin !== 'omnisend-for-lifterlms-add-on/class-omnisend-lifterlmsaddon.php' ) {
+			return;
+		}
+
+		exit( esc_url( wp_safe_redirect( admin_url( 'options-general.php?page=omnisend-lifterlms' ) ) ) );
 	}
 
 	/**
@@ -116,6 +149,7 @@ class Omnisend_LifterLMSAddOn {
 			add_action( 'admin_notices', array( 'Omnisend_LifterLMSAddOn', 'lifterlms_notice' ) );
 		}
 
+		add_action( 'init', array( 'Omnisend_LifterLMSAddOn', 'register_sync_actions' ) );
 		add_action( 'lms_registered_form_actions', array( 'Omnisend_LifterLMSAddOn', 'register_actions' ), 10, 1 );
 	}
 
@@ -138,18 +172,6 @@ class Omnisend_LifterLMSAddOn {
 	 */
 	public static function omnisend_deactivated_notice() {
 		echo '<div class="error"><p>' . esc_html__( 'Plugin Omnisend is deactivated. Please activate and connect to your Omnisend account.', 'omnisend-lifter_lms' ) . '<a href="https://wordpress.org/plugins/omnisend/">' . esc_html__( 'Omnisend plugin.', 'omnisend-lifter_lms' ) . '</a></p></div>';
-	}
-
-	/**
-	 * Check if addon is activated for the first time
-	 */
-	public static function lifterlms_plugin_activate() {
-		if ( is_admin() && ! get_option( 'lifterlms_initial_sync_made' ) ) {
-			$omnisend_api_service = new OmnisendApiService();
-			$omnisend_api_service->create_users_as_omnisend_contacts();
-
-			add_option( 'lifterlms_initial_sync_made', true );
-		}
 	}
 
 	/**

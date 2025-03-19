@@ -25,6 +25,11 @@ class SettingsService {
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'add_settings_link' ) );
 	}
 
+	/**
+	 * Adds admin menu page
+	 *
+	 * @return void
+	 */
 	public function add_menu(): void {
 		add_options_page(
 			'Omnisend for Lifter LMS Options',
@@ -35,6 +40,11 @@ class SettingsService {
 		);
 	}
 
+	/**
+	 * Provides admin page content
+	 *
+	 * @return void
+	 */
 	public function options_page(): void {
 		?>
 		<div class="wrap">
@@ -50,6 +60,11 @@ class SettingsService {
 		<?php
 	}
 
+	/**
+	 * Registers settings
+	 *
+	 * @return void
+	 */
 	public function settings_init(): void {
 		register_setting( 'omnisend_lifterlms_options_group', 'omnisend_lifterlms_options' );
 
@@ -67,15 +82,35 @@ class SettingsService {
 			'omnisend-lifterlms',
 			'omnisend_lifterlms_settings_section'
 		);
+
+		add_settings_field(
+			'omnisend_lifterlms_filter_lms_sync_consent_setting',
+			'Allow contact sync to Omnisend',
+			array( $this, 'filter_lms_sync_setting_callback' ),
+			'omnisend-lifterlms',
+			'omnisend_lifterlms_settings_section'
+		);
 	}
 
+	/**
+	 * Provides additional notice
+	 *
+	 * @return void
+	 */
 	public function settings_section_callback(): void {
 		echo '<p class="information-notice">Depending on the privacy laws of your country of operation, it is recommended to enable marketing opt-in checkboxes in Account Creation & Course Checkout forms to collect marketing consent from your customers</p>';
 		echo '<p>If you wish to enable consent collection, check below</p>';
 	}
 
+
+	/**
+	 * Provides consent field
+	 *
+	 * @return void
+	 */
 	public function filter_lms_consent_setting_callback(): void {
 		$options = get_option( 'omnisend_lifterlms_options' );
+
 		if ( isset( $options['filter_lms_consent_setting'] ) && $options['filter_lms_consent_setting'] == '1' ) {
 			$checked_form = 'checked';
 		} else {
@@ -87,9 +122,34 @@ class SettingsService {
 		<?php
 	}
 
-	public function add_settings_link( $links ) {
+	/**
+	 * Provides sync field
+	 *
+	 * @return void
+	 */
+	public function filter_lms_sync_setting_callback(): void {
+		$options = get_option( 'omnisend_lifterlms_options' );
+
+		if ( isset( $options['filter_lms_sync_setting'] ) && $options['filter_lms_sync_setting'] == '1' ) {
+			$checked_form = 'checked';
+		} else {
+			$checked_form = '';
+		}
+
+		?>
+		<input type="checkbox" name="omnisend_lifterlms_options[filter_lms_sync_setting]" <?php echo esc_html( $checked_form ); ?> value="1" />
+		<?php
+	}
+
+	/**
+	 * Adds settings URL for addon in plugins list
+	 *
+	 * @return array
+	 */
+	public function add_settings_link( $links ): array {
 		$settings_link = '<a href="options-general.php?page=omnisend-lifterlms">Settings</a>';
 		array_unshift( $links, $settings_link );
+
 		return $links;
 	}
 }
