@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Omnisend for LifterLMS Add-On
  * Description: A LifterLMS add-on to sync contacts with Omnisend. In collaboration with LifterLMS plugin it enables better customer tracking
- * Version: 1.1.0
+ * Version: 1.1.1
  * Requires PHP: 7.4
  * Author: Omnisend
  * Author URI: https://www.omnisend.com
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'OMNISEND_LIFTERLMS_ADDON_NAME', 'Omnisend for Lifter LMS Add-On' );
-define( 'OMNISEND_LIFTERLMS_ADDON_VERSION', '1.1.0' );
+define( 'OMNISEND_LIFTERLMS_ADDON_VERSION', '1.1.1' );
 
 spl_autoload_register( array( 'Omnisend_LifterLMSAddOn', 'autoloader' ) );
 add_action( 'plugins_loaded', array( 'Omnisend_LifterLMSAddOn', 'check_plugin_requirements' ) );
