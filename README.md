@@ -2,7 +2,7 @@
 
 Automatically syncs LifterLMS contacts, new subscribers, their courses, and membership levels to Omnisend.
 
-Requires the [Omnisend](https://wordpress.org/plugins/omnisend/) plugin.
+Requires [LifterLMS](https://wordpress.org/plugins/lifterlms/) and the [Omnisend](https://wordpress.org/plugins/omnisend/) plugin.
 
 WordPress plugin: https://wordpress.org/plugins/omnisend-for-lifterlms-add-on/
 
