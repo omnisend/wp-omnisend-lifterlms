@@ -1,7 +1,12 @@
-# wp-omnisend-lifterlms
+# Omnisend for LifterLMS Add-On
+
+Automatically syncs LifterLMS contacts, new subscribers, their courses, and membership levels to Omnisend.
+
+Requires the [Omnisend](https://wordpress.org/plugins/omnisend/) plugin.
+
+WordPress plugin: https://wordpress.org/plugins/omnisend-for-lifterlms-add-on/
 
 Plugin for _LifterLMS_ WordPress plugin. More information can be found [here](https://wordpress.com/plugins/lifterlms).
-
 
 ## PHP Linting
 
@@ -41,3 +46,4 @@ A second `phpcbf` script can be run to automatically correct coding standard vio
 
 ```shell
 ./vendor/squizlabs/php_codesniffer/bin/phpcbf --ignore=.js --standard=WordPress omnisend-connect
+```
