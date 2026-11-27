@@ -185,7 +185,7 @@ class ContactMapper {
 		$contact = new Contact();
 		$contact->set_email( $user_email );
 
-		if ( empty( $current_contract_courses ) || null ) {
+		if ( empty( $current_contract_courses ) ) {
 			$current_contract_courses = '';
 		}
 
@@ -221,7 +221,7 @@ class ContactMapper {
 		$contact = new Contact();
 		$contact->set_email( $user_email );
 
-		if ( empty( $current_contract_memberships ) || null ) {
+		if ( empty( $current_contract_memberships ) ) {
 			$current_contract_memberships = '';
 		}
 		$contact->add_custom_property( 'memberships', $current_contract_memberships );
