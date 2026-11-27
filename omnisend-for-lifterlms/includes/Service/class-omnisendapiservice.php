@@ -167,8 +167,6 @@ class OmnisendApiService {
 				return;
 			}
 
-			$all_users = array();
-
 			foreach ( $non_admin_users as $user ) {
 				$user_info  = $this->get_user_info( $user );
 				$contacts[] = $this->contact_mapper->create_contact_from_user_info( $user_info );
