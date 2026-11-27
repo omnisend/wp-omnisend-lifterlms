@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace Omnisend\LifterLMSAddon\Service;
 
 use LLMS_Student;
-use Omnisend\LifterLMSAddon\Actions\OmnisendAddOnAction;
 use Omnisend\LifterLMSAddon\Mapper\ContactMapper;
 use Omnisend\LifterLMSAddon\Validator\ResponseValidator;
 use Omnisend\SDK\V1\Omnisend;
@@ -65,20 +64,13 @@ class OmnisendApiService {
 	 *
 	 * @param array $form_data The form data.
 	 *
-	 * @return array Tracker data.
+	 * @return void
 	 */
-	public function create_omnisend_contact( array $form_data ): array {
+	public function create_omnisend_contact( array $form_data ): void {
 		$contact  = $this->contact_mapper->create_contact( $form_data );
 		$response = $this->client->save_contact( $contact );
 
-		if ( ! $this->response_validator->is_valid( $response ) ) {
-			return array();
-		}
-
-		return array(
-			OmnisendAddOnAction::EMAIL        => $form_data['email_address'],
-			OmnisendAddOnAction::PHONE_NUMBER => $form_data['llms_phone'],
-		);
+		$this->response_validator->is_valid( $response );
 	}
 
 	/**
