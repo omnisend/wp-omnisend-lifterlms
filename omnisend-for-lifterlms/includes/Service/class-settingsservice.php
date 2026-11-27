@@ -22,7 +22,6 @@ class SettingsService {
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'add_menu' ) );
 		add_action( 'admin_init', array( $this, 'settings_init' ) );
-		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'add_settings_link' ) );
 	}
 
 	/**
@@ -139,17 +138,5 @@ class SettingsService {
 		?>
 		<input type="checkbox" name="omnisend_lifterlms_options[filter_lms_sync_setting]" <?php echo esc_html( $checked_form ); ?> value="1" />
 		<?php
-	}
-
-	/**
-	 * Adds settings URL for addon in plugins list
-	 *
-	 * @return array
-	 */
-	public function add_settings_link( $links ): array {
-		$settings_link = '<a href="options-general.php?page=omnisend-lifterlms">Settings</a>';
-		array_unshift( $links, $settings_link );
-
-		return $links;
 	}
 }
