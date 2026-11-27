@@ -17,7 +17,6 @@
  * @package OmnisendLifterLMSPlugin
  */
 
-use Omnisend\LifterLMSAddon\Actions\OmnisendAddOnAction;
 use Omnisend\LifterLMSAddon\Service\SettingsService;
 use Omnisend\LifterLMSAddon\Service\ConsentService;
 use Omnisend\LifterLMSAddon\Cron\OmnisendInitialSync;
@@ -44,19 +43,6 @@ $omnisend_lifterlms_addon_consent  = new ConsentService();
  * Class Omnisend_LifterLMSAddOn
  */
 class Omnisend_LifterLMSAddOn {
-	/**
-	 * Register actions for the Omnisend Lifter LMS Add-On.
-	 *
-	 * @param array $actions The array of actions.
-	 *
-	 * @return array The modified array of actions.
-	 */
-	public static function register_actions( array $actions ): array {
-		new OmnisendAddOnAction();
-
-		return $actions;
-	}
-
 	/**
 	 * Registers initial sync event
 	 *
@@ -177,7 +163,6 @@ class Omnisend_LifterLMSAddOn {
 		}
 
 		add_action( 'init', array( 'Omnisend_LifterLMSAddOn', 'register_sync_actions' ) );
-		add_action( 'lms_registered_form_actions', array( 'Omnisend_LifterLMSAddOn', 'register_actions' ), 10, 1 );
 	}
 
 	/**
